@@ -85,6 +85,36 @@ try {
 
 console.log(`🔍 Starting SEO audit for: ${url}`);
 
+// 💰 Pay-per-Event charge — $12 per run
+// This MUST succeed before any API work begins.
+// If monetization isn't active yet, this throws and the run fails safely.
+const { charge } = await Actor.getChargingManager();
+
+try {
+  const result = await charge({ eventName: 'advanced-report', count: 1 });
+  console.log(`💰 Charge recorded — $${result.totalAmount} ${result.currency}`);
+} catch (err) {
+  const msg = err.message || '';
+  const status = err.statusCode || err.status || 0;
+
+  if (status === 402 || msg.includes('insufficient credits')) {
+    console.error('❌ Insufficient credits. Please top up your Apify account to run this actor ($12 required).');
+  } else if (status === 400 || msg.includes('unknown event') || msg.includes('not configured')) {
+    console.error('❌ Event "advanced-report" is not configured in Apify Console monetization settings.');
+    console.error('   The actor owner must set up Pay-per-Event pricing before publishing.');
+  } else if (status === 403 || msg.includes('not monetized')) {
+    console.error('❌ Monetization is not active for this actor.');
+    console.error('   Wait for KYC approval + 14-day propagation before publishing.');
+  } else if (status >= 500) {
+    console.error('❌ Apify payment service unavailable. Please retry later.');
+  } else {
+    console.error(`❌ Charge failed: ${msg}`);
+    console.error('   This actor cannot run until Apify monetization is fully propagated.');
+  }
+
+  await Actor.exit(1);
+}
+
 const submitData = await submitReport(url);
 const jobId = submitData.report?.jobId;
 

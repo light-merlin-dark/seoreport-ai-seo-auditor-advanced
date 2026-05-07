@@ -4,6 +4,9 @@
   "title": "SEOReport.dev – Advanced AI SEO Audit | Full Report + Priority Fixes",
   "description": "Full advanced SEO report from SEOReport.dev. Complete findings, priority fix plan, per-page evidence, and AI executive narrative. For professionals who need action, not just scores.",
   "version": "1.0.0",
+  "pricing": {
+    "type": "payPerEvent"
+  },
   "input": "./input_schema.json",
   "dockerfile": "./Dockerfile",
   "readme": "./README.md"
