@@ -2,6 +2,8 @@
 
 **Full advanced report** from [SEOReport.dev](https://seoreport.dev). Everything the free preview shows — plus the complete action plan.
 
+> New to SEOReport? Try our **[free actor](https://github.com/light-merlin-dark/seoreport-ai-seo-auditor-free)** first — same engine, instant score, zero cost.
+
 ## What you get
 
 - **Instant 0–100 overall score** + 4 domain scores (SEO, AI Readiness, Performance, Security)
