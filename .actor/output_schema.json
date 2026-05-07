@@ -1,0 +1,19 @@
+{
+  "actorOutputSchemaVersion": 1,
+  "title": "SEOReport.dev Advanced Actor Output",
+  "description": "Full unlocked SEO audit report with complete findings, priority fix plan, per-page evidence, and AI executive narrative. All sections unlocked — no paywall.",
+  "properties": {
+    "reportDataset": {
+      "type": "string",
+      "title": "Report Results (Dataset)",
+      "description": "Full JSON report as a dataset item. Ideal for automation, bulk processing, and integrations.",
+      "template": "{{links.apiDefaultDatasetUrl}}/items"
+    },
+    "reportOutput": {
+      "type": "string",
+      "title": "Report Output (Key-Value Store)",
+      "description": "Direct access to the report JSON stored under the 'OUTPUT' key. Ideal for single-run API access.",
+      "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/OUTPUT"
+    }
+  }
+}
