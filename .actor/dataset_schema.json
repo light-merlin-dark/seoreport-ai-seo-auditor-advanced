@@ -1,131 +1,79 @@
 {
-  "actorDatasetSchemaVersion": 1,
-  "title": "SEOReport.dev Advanced Actor Dataset Schema",
-  "description": "Schema for full unlocked SEO audit report dataset items. Contains all findings, priority fixes, per-page evidence, and AI executive narrative. No locked sections.",
-  "properties": {
-    "jobId": {
-      "type": "string",
-      "description": "Unique identifier for this report job"
+  "actorSpecification": 1,
+  "fields": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "targetUrl": {
+        "type": "string",
+        "title": "Target URL",
+        "description": "Normalized website URL that was audited."
+      },
+      "jobId": {
+        "type": ["string", "null"],
+        "title": "Job ID",
+        "description": "SEOReport job identifier for this run."
+      },
+      "overallScore": {
+        "type": ["number", "null"],
+        "title": "Overall score",
+        "description": "0-100 overall grade."
+      },
+      "seoScore": {
+        "type": ["number", "null"],
+        "title": "SEO score",
+        "description": "0-100 SEO domain score."
+      },
+      "aiScore": {
+        "type": ["number", "null"],
+        "title": "AI readiness score",
+        "description": "0-100 AI/GEO domain score."
+      },
+      "performanceScore": {
+        "type": ["number", "null"],
+        "title": "Performance score",
+        "description": "0-100 performance domain score."
+      },
+      "securityScore": {
+        "type": ["number", "null"],
+        "title": "Security score",
+        "description": "0-100 security domain score."
+      },
+      "paidUnlocked": {
+        "type": "boolean",
+        "title": "Paid sections unlocked",
+        "description": "Whether this run returned the unlocked advanced report."
+      }
     },
-    "targetUrl": {
-      "type": "string",
-      "description": "The URL that was audited"
-    },
-    "status": {
-      "type": "string",
-      "description": "Job status: queued, running, completed, failed, dead_lettered, or cancelled"
-    },
-    "isSnapshotReady": {
-      "type": "boolean",
-      "description": "Whether the report snapshot is ready for presentation"
-    },
-    "entitlementState": {
-      "type": "string",
-      "description": "Access level: 'paid' for the advanced actor"
-    },
-    "score": {
-      "type": "object",
-      "description": "Overall and category scores",
-      "properties": {
-        "overall": { "type": "number", "description": "Overall SEO score from 0-100" },
-        "band": { "type": "string", "description": "Score band label (e.g., 'Excellent', 'Good', 'Needs Work')" },
-        "totalChecks": { "type": "number", "description": "Total number of checks performed" },
-        "passedChecks": { "type": "number", "description": "Number of checks that passed" },
-        "failedChecks": { "type": "number", "description": "Number of checks that failed" },
-        "warnChecks": { "type": "number", "description": "Number of checks with warnings" },
-        "failingCriticalChecks": { "type": "number", "description": "Number of critical checks that failed" },
-        "categoryScores": {
-          "type": "array",
-          "description": "Per-category score breakdown",
-          "items": {
-            "type": "object",
-            "properties": {
-              "category": { "type": "string", "description": "Category name" },
-              "score": { "type": "number", "description": "Category score 0-100" },
-              "checks": { "type": "number", "description": "Number of checks in category" },
-              "pass": { "type": "number" },
-              "fail": { "type": "number" },
-              "warn": { "type": "number" },
-              "info": { "type": "number" }
-            }
-          }
-        },
-        "domainScores": {
-          "type": "array",
-          "description": "Per-domain score breakdown (seo, performance, security, ai)",
-          "items": {
-            "type": "object",
-            "properties": {
-              "domain": { "type": "string", "description": "Domain identifier" },
-              "label": { "type": "string", "description": "Human-readable domain label" },
-              "score": { "type": "number", "description": "Domain score 0-100" },
-              "checks": { "type": "number" },
-              "pass": { "type": "number" },
-              "fail": { "type": "number" },
-              "warn": { "type": "number" },
-              "info": { "type": "number" }
-            }
-          }
+    "required": ["targetUrl", "paidUnlocked"]
+  },
+  "views": {
+    "overview": {
+      "title": "Overview",
+      "transformation": {
+        "fields": [
+          "targetUrl",
+          "overallScore",
+          "seoScore",
+          "aiScore",
+          "performanceScore",
+          "securityScore",
+          "jobId",
+          "paidUnlocked"
+        ]
+      },
+      "display": {
+        "component": "table",
+        "properties": {
+          "targetUrl": { "label": "URL", "format": "link" },
+          "overallScore": { "label": "Overall", "format": "number" },
+          "seoScore": { "label": "SEO", "format": "number" },
+          "aiScore": { "label": "AI", "format": "number" },
+          "performanceScore": { "label": "Performance", "format": "number" },
+          "securityScore": { "label": "Security", "format": "number" },
+          "paidUnlocked": { "label": "Unlocked", "format": "boolean" }
         }
       }
-    },
-    "view": {
-      "type": "object",
-      "description": "Full report view with all sections unlocked",
-      "properties": {
-        "sections": {
-          "type": "array",
-          "description": "Array of report sections with headlines, summaries, and detailed evidence",
-          "items": {
-            "type": "object",
-            "properties": {
-              "key": { "type": "string", "description": "Section identifier" },
-              "visibility": { "type": "string", "description": "Always 'free' for advanced actor" },
-              "state": { "type": "string", "description": "Section state: ready or locked" },
-              "headline": { "type": "string", "description": "Section headline" },
-              "summary": { "type": "string", "description": "Section summary text" },
-              "detail": { "type": "object", "description": "Detailed evidence, findings, and fix instructions" }
-            }
-          }
-        }
-      }
-    },
-    "preview": {
-      "type": "object",
-      "description": "Preview metadata",
-      "properties": {
-        "sectionKeys": { "type": "array", "items": { "type": "string" } },
-        "readySectionKeys": { "type": "array", "items": { "type": "string" } },
-        "topFindingKeys": { "type": "array", "items": { "type": "string" } }
-      }
-    },
-    "paidUnlock": {
-      "type": "object",
-      "description": "Paid unlock status — always unlocked for advanced actor",
-      "properties": {
-        "unlocked": { "type": "boolean", "description": "Always true for advanced actor" },
-        "sectionKeys": { "type": "array", "items": { "type": "string" } },
-        "lockedSectionKeys": { "type": "array", "description": "Always empty for advanced actor" }
-      }
-    },
-    "advancedPreview": {
-      "type": "object",
-      "description": "Advanced report metrics",
-      "properties": {
-        "fixCount": { "type": "number", "description": "Number of recommended fixes" },
-        "findingCount": { "type": "number", "description": "Number of findings" },
-        "categoryBreakdown": { "type": "string", "description": "Text summary of category performance" },
-        "estimatedPages": { "type": "string", "description": "Estimated pages analyzed" },
-        "coverageHeadline": { "type": "string" },
-        "coverageSummary": { "type": "string" },
-        "includesPdf": { "type": "boolean" },
-        "focusAreas": { "type": "array", "items": { "type": "string" } },
-        "lockedFindingTitles": { "type": "array", "description": "Always empty for advanced actor" }
-      }
-    },
-    "locale": {
-      "type": "string",
-      "description": "Report locale (e.g., 'en', 'es', 'de')"
     }
   }
 }

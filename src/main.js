@@ -6,6 +6,21 @@ const ACTOR_TOKEN = process.env.SEOREPORT_ACTOR_TOKEN;
 const POLL_INTERVAL_MS = 2_000;
 const MAX_POLL_TIME_MS = 90_000;
 
+function overviewItem(url, report) {
+  const score = report && typeof report.score === "object" && report.score ? report.score : {};
+  const domains = score.domainScores && typeof score.domainScores === "object" ? score.domainScores : {};
+  return {
+    targetUrl: url,
+    jobId: typeof report?.jobId === "string" ? report.jobId : null,
+    overallScore: typeof score.overall === "number" ? score.overall : null,
+    seoScore: typeof domains.seo === "number" ? domains.seo : null,
+    aiScore: typeof domains.ai === "number" ? domains.ai : null,
+    performanceScore: typeof domains.performance === "number" ? domains.performance : null,
+    securityScore: typeof domains.security === "number" ? domains.security : null,
+    paidUnlocked: report?.paidUnlock?.unlocked === true,
+  };
+}
+
 async function submitReport(url) {
   const res = await fetch(`${API_BASE}/api/v1/reports`, {
     method: 'POST',
@@ -147,8 +162,7 @@ const report = await pollReport(jobId);
 console.log(`✅ Report complete — Score: ${report.score?.overall ?? '?'}/100`);
 console.log(`💡 Upgrade to advanced report: https://seoreport.dev/pricing`);
 
-// Push to Apify Dataset (for automation / CSV export)
-await Actor.pushData(report);
+await Actor.pushData(overviewItem(url, report));
 
 // Push to OUTPUT key-value store (for direct API access)
 await Actor.setValue('OUTPUT', report);
