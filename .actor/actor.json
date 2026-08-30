@@ -1,10 +1,11 @@
 {
   "actorSpecification": 1,
   "name": "seoreport-dev-ai-seo-auditor-advanced",
-  "title": "SEOReport.dev – Advanced AI SEO Auditor",
-  "description": "Full advanced report from SEOReport.dev: 139 checks, priority fix plan, evidence, and AI executive narrative.",
+  "title": "Get a full SEO audit with a fix plan",
+  "description": "Full advanced report from SEOReport.dev: 139 checks, priority fix plan, evidence, and AI executive narrative. $12 per report.",
   "version": "0.1",
   "buildTag": "latest",
+  "categories": ["SEO_TOOLS", "AI", "MCP_SERVERS"],
   "dockerfile": "./Dockerfile",
   "readme": "./README.md",
   "input": "./input_schema.json",
