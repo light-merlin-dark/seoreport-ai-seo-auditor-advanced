@@ -59,7 +59,9 @@ The unlocked report JSON is stored on the run's `OUTPUT` key-value record.
 
 ## Pricing
 
-Pay-per-event: **$12** per advanced report. Subscribe at [seoreport.dev/pricing](https://seoreport.dev/pricing) for unlimited hosted reports.
+**$12 per report.** Apify Store prints this as “from $12,000.00 / 1,000 advanced reports” — that is their 1,000-unit headline, not a different price. One run is $12.
+
+Subscribe at [seoreport.dev/pricing](https://seoreport.dev/pricing) for unlimited hosted reports.
 
 ## Contact
 
