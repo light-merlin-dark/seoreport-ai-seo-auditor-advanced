@@ -6,17 +6,36 @@ const ACTOR_TOKEN = process.env.SEOREPORT_ACTOR_TOKEN;
 const POLL_INTERVAL_MS = 2_000;
 const MAX_POLL_TIME_MS = 90_000;
 
+/**
+ * `score.domainScores` is an ARRAY of `{ domain, label, score, ... }`, not a map
+ * keyed by domain name. This read used to be `domains.seo`, and because an array
+ * passes `typeof x === "object"` the guard above it looked satisfied while every
+ * lookup returned undefined — so the one row a Store user gets carried a real
+ * overallScore and `null` for SEO, AI, performance and security.
+ *
+ * Both READMEs promise "an overall score plus SEO, AI readiness, performance and
+ * security", so the shop window was advertising five numbers and delivering one.
+ * Measured on run LclXtbtzrtumfWqVD (example.com, 2026-09-11): overallScore 47
+ * with four nulls, while the payload itself carried seo/ai/performance/brand and
+ * security scores. That is also precisely what Apify's new ADWIC check ("Actor
+ * Does What It Claims", announced 2026-09-10, run as a free user) looks for.
+ */
+function domainScore(score, domain) {
+  const list = Array.isArray(score.domainScores) ? score.domainScores : [];
+  const found = list.find((entry) => entry && entry.domain === domain);
+  return typeof found?.score === "number" ? found.score : null;
+}
+
 function overviewItem(url, report) {
   const score = report && typeof report.score === "object" && report.score ? report.score : {};
-  const domains = score.domainScores && typeof score.domainScores === "object" ? score.domainScores : {};
   return {
     targetUrl: url,
     jobId: typeof report?.jobId === "string" ? report.jobId : null,
     overallScore: typeof score.overall === "number" ? score.overall : null,
-    seoScore: typeof domains.seo === "number" ? domains.seo : null,
-    aiScore: typeof domains.ai === "number" ? domains.ai : null,
-    performanceScore: typeof domains.performance === "number" ? domains.performance : null,
-    securityScore: typeof domains.security === "number" ? domains.security : null,
+    seoScore: domainScore(score, "seo"),
+    aiScore: domainScore(score, "ai"),
+    performanceScore: domainScore(score, "performance"),
+    securityScore: domainScore(score, "security"),
     paidUnlocked: report?.paidUnlock?.unlocked === true,
   };
 }
