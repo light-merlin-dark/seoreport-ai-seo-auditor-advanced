@@ -100,51 +100,69 @@ try {
 
 console.log(`🔍 Starting SEO audit for: ${url}`);
 
-// 💰 Pay-per-Event charge — $12 per run
-// This MUST succeed before any API work begins.
-let chargeResult;
-try {
-  const chargingManager = Actor.getChargingManager?.();
-  const pricingInfo = chargingManager?.getPricingInfo?.();
+/**
+ * Monetization is *verified* here and *charged* at the very end.
+ *
+ * Apify's own rule: charge for results after they are saved and available, and
+ * never bill a user for what they cannot access. This Actor used to call
+ * `Actor.charge` before `submitReport`, on the reasoning that the charge "MUST
+ * succeed before any API work begins" — which is true of the entitlement and
+ * false of the billing. A hosted failure or a poll timeout after that point left
+ * a FAILED run that had already taken $12, and on a listing with no ratings the
+ * first such run is the review that defines it.
+ *
+ * So the two halves are split. The config assertion below costs nothing, takes
+ * no money, and still fails fast when the Actor is misconfigured or unpublished
+ * — there is no point crawling a site we cannot bill for. The charge itself
+ * moves to `chargeForDeliveredReport()`, after the dataset item and OUTPUT are
+ * both written.
+ */
+const chargingManager = Actor.getChargingManager?.();
+const pricingInfo = chargingManager?.getPricingInfo?.();
 
-  if (!pricingInfo?.isPayPerEvent) {
-    console.error('❌ Pay-per-Event is not active for this actor.');
-    console.error('   This actor must be published to the Apify Store before PPE charging works.');
-    throw new Error('PPE_NOT_ACTIVE');
+if (!pricingInfo?.isPayPerEvent) {
+  console.error('❌ Pay-per-Event is not active for this actor.');
+  console.error('   This actor must be published to the Apify Store before PPE charging works.');
+  await Actor.exit(1);
+}
+
+async function chargeForDeliveredReport() {
+  try {
+    const chargeResult = await Actor.charge({ eventName: 'advanced-report', count: 1 });
+
+    if (chargeResult?.eventChargeLimitReached) {
+      console.error('❌ Charge limit reached. The user has set a maximum spend limit that was exceeded.');
+      console.error('   The report above was delivered and is in this run\'s dataset and OUTPUT.');
+      throw new Error('CHARGE_LIMIT_REACHED');
+    }
+
+    console.log(`💰 Charge recorded — event: advanced-report, count: ${chargeResult?.chargedCount ?? 1}`);
+  } catch (err) {
+    const msg = err.message || '';
+    const status = err.statusCode || err.status || 0;
+
+    if (msg === 'CHARGE_LIMIT_REACHED') {
+      // Already logged above.
+    } else if (status === 402 || msg.includes('insufficient credits')) {
+      console.error('❌ Insufficient credits. Please top up your Apify account to run this actor ($12 required).');
+    } else if (status === 400 || msg.includes('unknown event') || msg.includes('not configured')) {
+      console.error('❌ Event "advanced-report" is not configured in Apify Console monetization settings.');
+      console.error('   Verify the event name and price are set correctly in the Monetization tab.');
+    } else if (status === 403 || msg.includes('not monetized')) {
+      console.error('❌ Monetization is not active for this actor.');
+      console.error('   Ensure the actor is published to the Store and PPE is configured.');
+    } else if (status >= 500) {
+      console.error('❌ Apify payment service unavailable. Please retry later.');
+    } else {
+      console.error(`❌ Charge failed: ${msg}`);
+    }
+
+    // A delivered report that did not bill must not be reported as a clean run:
+    // that is silent revenue loss, and it is the operator's problem to see.
+    console.error('   The report was delivered but could not be charged — this run is marked failed.');
+    process.exitCode = 1;
+    throw err;
   }
-
-  chargeResult = await Actor.charge({ eventName: 'advanced-report', count: 1 });
-
-  if (chargeResult?.eventChargeLimitReached) {
-    console.error('❌ Charge limit reached. The user has set a maximum spend limit that was exceeded.');
-    throw new Error('CHARGE_LIMIT_REACHED');
-  }
-
-  console.log(`💰 Charge recorded — event: advanced-report, count: ${chargeResult?.chargedCount ?? 1}`);
-} catch (err) {
-  const msg = err.message || '';
-  const status = err.statusCode || err.status || 0;
-
-  if (msg === 'PPE_NOT_ACTIVE') {
-    // Already logged above — just fail
-  } else if (status === 402 || msg.includes('insufficient credits')) {
-    console.error('❌ Insufficient credits. Please top up your Apify account to run this actor ($12 required).');
-  } else if (status === 400 || msg.includes('unknown event') || msg.includes('not configured')) {
-    console.error('❌ Event "advanced-report" is not configured in Apify Console monetization settings.');
-    console.error('   Verify the event name and price are set correctly in the Monetization tab.');
-  } else if (status === 403 || msg.includes('not monetized')) {
-    console.error('❌ Monetization is not active for this actor.');
-    console.error('   Ensure the actor is published to the Store and PPE is configured.');
-  } else if (status >= 500) {
-    console.error('❌ Apify payment service unavailable. Please retry later.');
-  } else {
-    console.error(`❌ Charge failed: ${msg}`);
-    console.error('   This usually means the actor is not yet published or monetization is not fully active.');
-  }
-
-  // Actually fail the run — don't let it show "Succeeded"
-  process.exitCode = 1;
-  throw err;
 }
 
 const submitData = await submitReport(url);
@@ -166,5 +184,8 @@ await Actor.pushData(overviewItem(url, report));
 
 // Push to OUTPUT key-value store (for direct API access)
 await Actor.setValue('OUTPUT', report);
+
+// The results are saved and readable. Only now does this cost $12.
+await chargeForDeliveredReport();
 
 await Actor.exit();

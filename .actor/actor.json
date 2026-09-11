@@ -5,6 +5,8 @@
   "description": "Full advanced report from SEOReport.dev: 139 checks, priority fix plan, evidence, and AI executive narrative. $12 per report.",
   "version": "0.1",
   "buildTag": "latest",
+  "minMemoryMbytes": 512,
+  "maxMemoryMbytes": 1024,
   "categories": ["SEO_TOOLS", "AI", "MCP_SERVERS"],
   "dockerfile": "./Dockerfile",
   "readme": "./README.md",
