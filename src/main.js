@@ -1,6 +1,7 @@
 import { Actor } from 'apify';
+import { chargeDeliveredReport } from './charge-delivered-report.js';
 
-const API_BASE = process.env.SEOREPORT_API_BASE_URL || 'https://api.seoreport.dev';
+const API_BASE = process.env.SEOREPORT_API_BASE_URL || 'https://seoreport.dev';
 const ACTOR_TOKEN = process.env.SEOREPORT_ACTOR_TOKEN;
 
 const POLL_INTERVAL_MS = 2_000;
@@ -147,21 +148,14 @@ if (!pricingInfo?.isPayPerEvent) {
 
 async function chargeForDeliveredReport() {
   try {
-    const chargeResult = await Actor.charge({ eventName: 'advanced-report', count: 1 });
-
-    if (chargeResult?.eventChargeLimitReached) {
-      console.error('❌ Charge limit reached. The user has set a maximum spend limit that was exceeded.');
-      console.error('   The report above was delivered and is in this run\'s dataset and OUTPUT.');
-      throw new Error('CHARGE_LIMIT_REACHED');
-    }
-
-    console.log(`💰 Charge recorded — event: advanced-report, count: ${chargeResult?.chargedCount ?? 1}`);
+    const chargeResult = await chargeDeliveredReport((options) => Actor.charge(options));
+    console.log(`💰 Charge recorded — event: advanced-report, count: ${chargeResult.chargedCount}`);
   } catch (err) {
     const msg = err.message || '';
     const status = err.statusCode || err.status || 0;
 
-    if (msg === 'CHARGE_LIMIT_REACHED') {
-      // Already logged above.
+    if (msg === 'CHARGE_NOT_RECORDED') {
+      console.error('❌ Apify did not record the advanced-report charge.');
     } else if (status === 402 || msg.includes('insufficient credits')) {
       console.error('❌ Insufficient credits. Please top up your Apify account to run this actor ($12 required).');
     } else if (status === 400 || msg.includes('unknown event') || msg.includes('not configured')) {
@@ -197,7 +191,9 @@ console.log(`⏳ Report queued (jobId: ${jobId}). Polling for results...`);
 const report = await pollReport(jobId);
 
 console.log(`✅ Report complete — Score: ${report.score?.overall ?? '?'}/100`);
-console.log(`💡 Upgrade to advanced report: https://seoreport.dev/pricing`);
+if (report?.paidUnlock?.unlocked !== true) {
+  throw new Error('Advanced Actor received a report without paid entitlement');
+}
 
 await Actor.pushData(overviewItem(url, report));
 
