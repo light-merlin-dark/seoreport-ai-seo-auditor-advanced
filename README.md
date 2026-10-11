@@ -23,17 +23,6 @@ Full advanced report from [SEOReport.dev](https://seoreport.dev). The same engin
 | Performance | TTFB, compression, HTTP/2, CDN, image optimization, render-blocking resources |
 | Security | HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, security.txt |
 
-## Free vs advanced
-
-| | Free Actor | This Actor |
-|---|---|---|
-| Overall and domain scores | yes | yes |
-| Findings shown | top free findings | the full set of findings |
-| Fix instructions | hidden | full detail |
-| Priority fix plan | hidden | top issues by impact and effort |
-| AI executive narrative | hidden | consultant-style summary |
-| Price | compute only | **$12 per report** |
-
 ## Input
 
 | Field | Type | Required | Description |
