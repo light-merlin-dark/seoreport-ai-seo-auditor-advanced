@@ -51,6 +51,21 @@ Full advanced report from [SEOReport.dev](https://seoreport.dev). The same engin
 
 The unlocked report JSON is stored on the run's `OUTPUT` key-value record.
 
+## Run it from the API or an AI agent
+
+One call runs the audit and returns the `overview` row:
+
+```bash
+curl -X POST \
+  "https://api.apify.com/v2/acts/seoreport.dev~seoreport-dev-ai-seo-auditor-advanced/run-sync-get-dataset-items" \
+  -H "Authorization: Bearer $APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://example.com"}'
+```
+
+AI agents can call it through Apify's MCP server:
+`https://mcp.apify.com/?tools=seoreport.dev/seoreport-dev-ai-seo-auditor-advanced`
+
 ## Pricing
 
 **$12 per report.** One run is one report.
