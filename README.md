@@ -12,16 +12,16 @@ Full advanced report from [SEOReport.dev](https://seoreport.dev). The same engin
 
 ## What the engine checks
 
-| Category | Weight | What we audit |
-|---|---|---|
-| AI Readiness | 22% | llms.txt, AI crawler access, FAQ/HowTo schema, answer blocks, content freshness, entity markup |
-| Access & Crawl | 20% | Reachability, robots.txt, sitemap, indexability, crawl access, noindex conflicts |
-| Structured Data | 14% | JSON-LD validity, schema conflicts, Organization/WebSite/Breadcrumb/FAQ schema |
-| Canonicalization & Redirects | 13% | Canonical tags, redirect chains, loops, trailing slashes, host normalization |
-| Metadata & On-Page | 13% | Title, meta description, H1, Open Graph, mobile parity, content structure |
-| Internal Architecture | 8% | Internal links, crawl depth, hreflang, image discoverability |
-| Performance | 5% | TTFB, compression, HTTP/2, CDN, image optimization, render-blocking resources |
-| Security | 5% | HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, security.txt |
+| Category | What we audit |
+|---|---|
+| AI Readiness | llms.txt, AI crawler access, FAQ/HowTo schema, answer blocks, content freshness, entity markup |
+| Access & Crawl | Reachability, robots.txt, sitemap, indexability, crawl access, noindex conflicts |
+| Structured Data | JSON-LD validity, schema conflicts, Organization/WebSite/Breadcrumb/FAQ schema |
+| Canonicalization & Redirects | Canonical tags, redirect chains, loops, trailing slashes, host normalization |
+| Metadata & On-Page | Title, meta description, H1, Open Graph, mobile parity, content structure |
+| Internal Architecture | Internal links, crawl depth, hreflang, image discoverability |
+| Performance | TTFB, compression, HTTP/2, CDN, image optimization, render-blocking resources |
+| Security | HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, security.txt |
 
 ## Free vs advanced
 
