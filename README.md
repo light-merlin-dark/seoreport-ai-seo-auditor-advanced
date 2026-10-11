@@ -1,11 +1,11 @@
 # Get a full SEO audit with a fix plan
 
-Full advanced report from [SEOReport.dev](https://seoreport.dev). The same 139-check engine as the hosted advanced report — unlocked findings, priority fix plan, and an AI executive narrative. **$12 per report.**
+Full advanced report from [SEOReport.dev](https://seoreport.dev). The same engine as the hosted advanced report — every finding unlocked, priority fix plan, and an AI executive narrative. **$12 per report.**
 
 ## What you get
 
 - Instant 0–100 overall score plus SEO, AI readiness, performance, and security
-- All 139 findings with evidence and fix instructions
+- Every finding the hosted advanced report contains, with evidence and fix instructions
 - Priority fix plan (top issues by impact and effort)
 - AI executive narrative
 - One dataset row per run (`overview` view) plus the full unlocked JSON on the `OUTPUT` key
@@ -28,7 +28,7 @@ Full advanced report from [SEOReport.dev](https://seoreport.dev). The same 139-c
 | | Free Actor | This Actor |
 |---|---|---|
 | Overall and domain scores | yes | yes |
-| Findings shown | top free findings | all 139 |
+| Findings shown | top free findings | the full set of findings |
 | Fix instructions | hidden | full detail |
 | Priority fix plan | hidden | top issues by impact and effort |
 | AI executive narrative | hidden | consultant-style summary |
