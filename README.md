@@ -23,6 +23,11 @@ Full advanced report from [SEOReport.dev](https://seoreport.dev). The same engin
 | Performance | TTFB, compression, HTTP/2, CDN, image optimization, render-blocking resources |
 | Security | HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, security.txt |
 
+## Examples
+
+- [Get a full SEO audit with a fix plan](https://apify.com/seoreport.dev/seoreport-dev-ai-seo-auditor-advanced/examples/full-seo-audit-fix-plan)
+- [Run an agency-ready client SEO audit](https://apify.com/seoreport.dev/seoreport-dev-ai-seo-auditor-advanced/examples/agency-client-seo-audit)
+
 ## Input
 
 | Field | Type | Required | Description |
@@ -48,9 +53,9 @@ The unlocked report JSON is stored on the run's `OUTPUT` key-value record.
 
 ## Pricing
 
-**$12 per report.** Apify Store prints this as “from $12,000.00 / 1,000 advanced reports” — that is their 1,000-unit headline, not a different price. One run is $12.
+**$12 per report.** One run is one report.
 
-Subscribe at [seoreport.dev/pricing](https://seoreport.dev/pricing) for unlimited hosted reports.
+For recurring hosted reports, see the plans at [seoreport.dev/pricing](https://seoreport.dev/pricing).
 
 ## Contact
 
